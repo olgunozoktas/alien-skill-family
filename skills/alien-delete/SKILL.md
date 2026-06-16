@@ -95,6 +95,23 @@ to catch the case your grep missed. Don't imply certainty you don't have.
 If you added back nothing, say so and consider cutting deeper. If you couldn't prove a
 deletion safe, name the risk — don't ship false confidence.
 
+## Example
+
+**Input:** A `utils/` folder with 40 helpers; the codebase "feels heavy."
+
+- **Find candidates:** grep each export for usages → 12 are imported nowhere. A hand-rolled
+  `formatDate`/`parseDate` pair duplicates what `Intl`/the stdlib already do.
+- **Delete:** remove the 12 dead exports; delete the date helpers and migrate their 3 call
+  sites to `Intl`; drop the `moment`-style dep they pulled in.
+- **See what breaks:** run tests + type-check → one failure: a string-keyed dynamic
+  `require('./utils/legacySlug')` the type system couldn't see. That's the ~10% → **add it
+  back** (and leave a note that it's dynamically referenced).
+- **Output:** net 13 helpers + 1 dependency removed, 1 helper restored; suite green; greps
+  confirmed no other dynamic references.
+
+The compiler and tests *were* the "see what breaks" — and the one add-back is exactly the
+case grep-by-eye would have missed.
+
 ---
 
 **Next:** `/alien-simplify` — now make what *survived* clear, cohesive, and correct.

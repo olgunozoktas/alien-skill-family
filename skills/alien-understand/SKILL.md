@@ -88,6 +88,23 @@ wrote down is the one most likely to be a fossil.
 State what you're confident about vs. inferring. An honest "I don't yet know how X
 works" is worth more than a confident guess that misleads the next step.
 
+## Example
+
+**Input:** You land in an unfamiliar repo, ticket #214: *"Add CSV export to the reports page."*
+
+- **Map:** Laravel + Inertia/React. Reports live under `app/Reports/`, rendered by
+  `ReportController`; the page is `resources/js/pages/reports/index.tsx`. Hard rules in
+  `CLAUDE.md`: tenant scoping is mandatory, reuse before building.
+- **Deep-dive:** Trace the page → it already calls an `Exporter` service that produces the
+  PDF export. The CSV path can be a *driver* on that existing service, not a new pipeline.
+- **Requirement inventory:** CSV export (ticket #214, owner: PM) · respect tenant scoping
+  (implicit, from existing `Exporter`) · match the PDF's column set (inferred — unconfirmed).
+- **Output:** "Reports already export via `Exporter`; add a CSV driver beside the PDF one.
+  Open question for the human: same columns as the PDF, or a different set?"
+
+The deep-dive found the prior art (`Exporter`) *before* anyone wrote a second exporter —
+and surfaced one requirement (column set) that the ticket left silent.
+
 ---
 
 **Next:** `/alien-question` — challenge every requirement in the inventory you just

@@ -87,6 +87,24 @@ then refactor under it.
 
 Report measurements, not vibes, for any performance claim. "Feels faster" isn't a result.
 
+## Example
+
+**Input:** Pricing logic is a 5-level-deep nested `if/else` over tier × region × coupon —
+hard to follow, and `/alien-delete` already pruned the dead branches.
+
+- **Pin behavior first:** write a test that exercises the surviving tier/region/coupon
+  combinations, so the refactor is provably behavior-preserving.
+- **Clarify:** replace the nesting with a lookup table keyed on `(tier, region)`, and pull
+  the coupon adjustment into a named `applyCoupon()` function. The shape now matches the
+  domain: "price = base[tier][region], then coupon."
+- **Measure before optimizing:** profile — pricing is called once per checkout, well under
+  budget. No performance requirement survived `/alien-question`, so this is **clarity-only**;
+  optimizing it further would re-add complexity for nothing.
+- **Output:** same results, a third of the lines, readable top to bottom; tests green.
+
+Note what *didn't* happen: no caching, no micro-optimization. Simplify is allowed to stop
+at "obvious and correct" when there's no measured reason to go faster.
+
 ---
 
 **Next:** `/alien-accelerate` — now that the thing is right and lean, make the

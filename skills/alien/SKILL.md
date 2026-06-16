@@ -163,6 +163,26 @@ Close a loop (or a single step) with a short, honest report — not a wall of pr
 State what you verified (tests pass, build green, types clean) plainly. If you deleted
 something and couldn't prove it's safe, say so — don't imply certainty you don't have.
 
+## Worked examples
+
+A compressed pass — *"Add a notification center: inbox + email + SMS + push, pluggable":*
+
+```
+Understand → app already has EmailService + an event bus that persists every event.
+Question  → SMS/push/pluggable have no owner, no demand → KILL for v1; inbox → CHALLENGE.
+Delete    → drop the 4-driver abstraction + registry + new table (event bus already stores it).
+Simplify  → one NotifyByEmail listener on the existing bus, ~30 lines.
+Accelerate→ seed a demo + a 2s feature test (no manual clickflow).
+Automate  → the test runs in CI; no queue/cron yet — nothing recurring to lock in.
+Net       → shipped email notifications as ONE listener; a whole subsystem never built.
+```
+
+The win came from steps 1–2, not 3–5 — the 80% you question away and delete never needs to
+be optimized, automated, tested, or maintained. Three full worked loops (this one, a
+"dashboard is slow" perf pass, and an over-engineered-module cleanup) live in
+`references/examples.md` — read them for the end-to-end reasoning and how each step's
+output feeds the next.
+
 ## Deeper philosophy
 
 The full reasoning — the Tesla fiberglass-mat and sensor stories, the Raptor and radar

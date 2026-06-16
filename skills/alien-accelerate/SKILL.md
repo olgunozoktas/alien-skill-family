@@ -82,6 +82,23 @@ that's negative progress. Verify the accelerated loop still gives *trustworthy* 
 
 Give the before/after numbers. "Feels snappier" is not an acceleration result.
 
+## Example
+
+**Input:** The test suite takes 4 minutes — every test boots the full app and hits the real
+database, so nobody runs it locally until they're "done."
+
+- **Find the cycle time:** the cost is per-test app boot + real DB round-trips, paid even by
+  pure logic tests that need neither.
+- **Tighten the loop:** split a fast tier (unit/logic tests, in-memory, parallelized) from a
+  slow tier (full integration, real DB). The dev loop runs the fast tier; the full suite runs
+  in CI. Add seed data so feature tests don't each construct the world from scratch.
+- **Delete instead of speed up:** three integration tests re-asserted the same boot path —
+  collapse to one. The fastest test is the redundant one removed.
+- **Safety check:** the fast tier is deterministic and parallel-safe (no shared global
+  fixtures); CI still runs everything before merge.
+- **Output:** dev loop 4 min → 25s; full suite unchanged in CI. A suite people will actually
+  run fifty times a day beats a thorough one they run once.
+
 ---
 
 **Next:** `/alien-automate` — automate the now-fast, proven-stable steps, last. Or return

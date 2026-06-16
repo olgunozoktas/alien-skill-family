@@ -88,6 +88,22 @@ You're often right, and the human can kill a fossil you'd have been too cautious
 
 Be honest about confidence. A KILL you're 60% sure of is a CHALLENGE — say so.
 
+## Example
+
+**Input:** A spec says *"Every API response MUST include `correlation_id`, `trace_id`,
+AND `request_id`."* Three IDs on every payload feels like a requirement from "the platform."
+
+- **`correlation_id`** — owner: platform team, for stitching logs across services. Live
+  reason, real breakage if gone (tracing dashboards key on it). → **KEEP**.
+- **`trace_id`** — `git blame` → copied from an example gateway config two years ago; no
+  owner. Inspection shows it always carries the *same value* as `correlation_id`. → **KILL**.
+- **`request_id`** — same story; duplicates `correlation_id` for the single-service case.
+  Nothing reads it. → **KILL**.
+
+**Output (surfaced to the human):** "Three IDs, one real one — `trace_id`/`request_id`
+mirror `correlation_id` and have no consumer. Dropping both unless you know a client that
+reads them?" Two of three 'required' fields removed from every response, forever.
+
 ---
 
 **Next:** `/alien-delete` — remove the KILLed requirements and every part/process they

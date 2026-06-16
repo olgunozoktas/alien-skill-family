@@ -89,6 +89,25 @@ the senior move.
 
 ---
 
+**Example**
+
+**Input:** Before each PR the team runs format + lint + type-check + tests by hand — and
+sometimes forgets, so CI catches it late and the loop drags. The process is now fast
+(`/alien-accelerate`) and stable, so it's a real automation candidate.
+
+- **Automate:** a pre-push git hook running the same fast checks locally, plus a CI gate that
+  re-runs them on the PR — so a regression *fails loud* the moment it's pushed, not after a
+  reviewer's time is spent.
+- **Make it fail safe:** the hook and CI run the identical command; CI is the source of
+  truth (a local hook can be skipped), and a failure alarms rather than passing silently.
+- **Leave to humans:** the "is this the right architecture / should we ship this design"
+  judgment. That's high-variance and context-heavy — a gate can't make that call, and
+  pretending it can is the over-automation trap.
+- **Output:** format/lint/types/tests now enforced automatically; the *decisions* stay with
+  people. Automated the toil, not the judgment.
+
+---
+
 **Loop:** that's the algorithm — Question, Delete, Simplify, Accelerate, Automate, in
 order. To go again on the next subsystem, return to `/alien-understand`, or to `/alien`
 to drive the full loop. Stop when you'd add back more than ~10–15% of what you cut, or
