@@ -7,7 +7,7 @@
 #   ./setup.sh --remove  # remove the alien-* symlinks (leaves this repo intact)
 #
 # Mirrors the backlog-skill-family convention: source of truth lives here in
-# ~/Herd/alien-skill-family/skills/<name>/, and ~/.claude/skills/<name> is a
+# <this checkout>/skills/<name>/, and ~/.claude/skills/<name> is a
 # symlink to it. Edit the files here; changes are live immediately.
 set -euo pipefail
 
